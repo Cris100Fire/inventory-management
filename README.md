@@ -52,15 +52,15 @@ El sistema está diseñado para centralizar la gestión de existencias, registra
 
 El sistema utiliza los grupos y permisos de Django para controlar el acceso a las operaciones. Las opciones de navegación se muestran según el rol, y las vistas protegidas también comprueban los permisos desde el servidor.
 
-| Funcionalidad | Administradores | Almaceneros | Consultas |
-| --- | :---: | :---: | :---: |
-| Ver productos, categorías y proveedores | Sí | Sí | Sí |
-| Crear y editar productos | Sí | Sí | No |
-| Crear y editar categorías y proveedores | Sí | Sí | No |
-| Consultar movimientos de inventario | Sí | Sí | Sí |
-| Registrar entradas, salidas y ajustes | Sí | Sí | No |
-| Consultar y exportar reportes | Sí | Sí | Sí |
-| Gestionar usuarios | Sí | No | No |
+| Funcionalidad                           | Administradores | Almaceneros | Consultas |
+| --------------------------------------- | :-------------: | :---------: | :-------: |
+| Ver productos, categorías y proveedores |       Sí        |     Sí      |    Sí     |
+| Crear y editar productos                |       Sí        |     Sí      |    No     |
+| Crear y editar categorías y proveedores |       Sí        |     Sí      |    No     |
+| Consultar movimientos de inventario     |       Sí        |     Sí      |    Sí     |
+| Registrar entradas, salidas y ajustes   |       Sí        |     Sí      |    No     |
+| Consultar y exportar reportes           |       Sí        |     Sí      |    Sí     |
+| Gestionar usuarios                      |       Sí        |     No      |    No     |
 
 **Administradores:** gestionan el catálogo, las operaciones de inventario y las cuentas de usuario. Para administrar usuarios se requiere el permiso `accounts.manage_users`.
 
@@ -118,11 +118,11 @@ La aplicación se encuentra desplegada utilizando **Render** para el servicio we
 
 Para facilitar la evaluación, se prepararon tres cuentas con permisos diferenciados:
 
-| Cuenta | Rol | Propósito |
-| --- | --- | --- |
-| `demo_admin` | Administradores | Probar la gestión de usuarios, el catálogo y el inventario. |
-| `demo_almacen` | Almaceneros | Probar la gestión de productos y los movimientos de stock. |
-| `demo_consulta` | Consultas | Comprobar el acceso de solo lectura y los reportes. |
+| Cuenta          | Rol             | Propósito                                                   |
+| --------------- | --------------- | ----------------------------------------------------------- |
+| `demo_admin`    | Administradores | Probar la gestión de usuarios, el catálogo y el inventario. |
+| `demo_almacen`  | Almaceneros     | Probar la gestión de productos y los movimientos de stock.  |
+| `demo_consulta` | Consultas       | Comprobar el acceso de solo lectura y los reportes.         |
 
 Las credenciales se proporcionan **por separado** a los evaluadores autorizados; no se publican contraseñas en este repositorio.
 
@@ -130,20 +130,20 @@ El entorno puede incluir categorías, proveedores, productos y movimientos ficti
 
 ## Tecnologías utilizadas
 
-| Tecnología | Uso |
-| --- | --- |
-| Python | Lenguaje principal del backend |
-| Django 6.1 | Framework web |
-| MySQL | Base de datos relacional |
-| HTML | Estructura de las páginas |
-| CSS | Diseño e interfaz |
-| JavaScript | Interacciones del frontend |
-| Gunicorn | Servidor de aplicación en producción |
-| WhiteNoise | Servicio de archivos estáticos en producción |
-| OpenPyXL | Generación de archivos Excel |
-| python-dotenv | Gestión de variables de entorno |
-| Render | Alojamiento de la aplicación Django |
-| Aiven | Alojamiento de la base de datos MySQL |
+| Tecnología    | Uso                                          |
+| ------------- | -------------------------------------------- |
+| Python        | Lenguaje principal del backend               |
+| Django 6.1    | Framework web                                |
+| MySQL         | Base de datos relacional                     |
+| HTML          | Estructura de las páginas                    |
+| CSS           | Diseño e interfaz                            |
+| JavaScript    | Interacciones del frontend                   |
+| Gunicorn      | Servidor de aplicación en producción         |
+| WhiteNoise    | Servicio de archivos estáticos en producción |
+| OpenPyXL      | Generación de archivos Excel                 |
+| python-dotenv | Gestión de variables de entorno              |
+| Render        | Alojamiento de la aplicación Django          |
+| Aiven         | Alojamiento de la base de datos MySQL        |
 
 ## Arquitectura del proyecto
 
@@ -252,10 +252,6 @@ python manage.py test
 ```
 
 Las pruebas deben ejecutarse en un entorno aislado de los datos de producción.
-
-## Capturas de pantalla
-
-_Pendiente: incorporar capturas reales del dashboard, catálogo, movimientos y reportes._
 
 ## Estado del proyecto
 
