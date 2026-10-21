@@ -32,6 +32,11 @@ ALLOWED_HOSTS = [
     host.strip() for host in os.getenv("ALLOWED_HOSTS", "").split(",") if host.strip()
 ]
 
+CSRF_TRUSTED_ORIGINS = [
+    origin.strip()
+    for origin in os.getenv("CSRF_TRUSTED_ORIGINS", "").split(",")
+    if origin.strip()
+]
 
 # Application definition
 
@@ -97,6 +102,13 @@ DATABASES = {
         },
     }
 }
+
+ssl_ca = os.getenv("DB_SSL_CA")
+
+if ssl_ca:
+    DATABASES["default"]["OPTIONS"]["ssl"] = {
+        "ca": str(BASE_DIR / ssl_ca),
+    }
 
 
 # Password validation
@@ -169,3 +181,6 @@ CSRF_COOKIE_SECURE = not DEBUG
 
 # HSTS: activar solamente cuando HTTPS esté correctamente configurado
 SECURE_HSTS_SECONDS = 0
+
+if not DEBUG:
+    SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
