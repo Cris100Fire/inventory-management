@@ -21,9 +21,11 @@ class ForcePasswordChangeMiddlewareTests(TestCase):
 
         cls.user.groups.add(cls.group)
 
-        cls.profile = UserProfile.objects.create(
+        cls.profile, _ = UserProfile.objects.update_or_create(
             user=cls.user,
-            must_change_password=True,
+            defaults={
+                "must_change_password": True,
+            },
         )
 
     def setUp(self):
