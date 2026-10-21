@@ -1,0 +1,77 @@
+<nav class="main-menu" aria-label="Menú principal">
+    <p class="menu-section-label">GENERAL</p>
+
+    <a
+        href="{% url 'dashboard:home' %}"
+        class="menu-link {% if request.resolver_match.url_name == 'home' and request.resolver_match.namespace == 'dashboard' %}is-active{% endif %}"
+        {% if request.resolver_match.url_name == 'home' and request.resolver_match.namespace == 'dashboard' %}
+            aria-current="page"
+        {% endif %}
+    >
+        Inicio
+    </a>
+
+    <!-- GESTIÓN -->
+
+    <p class="menu-section-label">GESTIÓN</p>
+
+    {% if perms.catalog.view_product %}
+        <a
+            href="{% url 'catalog:product_list' %}"
+            class="menu-link {% if request.resolver_match.url_name|slice:':7' == 'product' and request.resolver_match.namespace == 'catalog' %}is-active{% endif %}"
+        >
+            Productos
+        </a>
+    {% endif %}
+
+    {% if perms.catalog.view_category %}
+        <a
+            href="{% url 'catalog:category_list' %}"
+            class="menu-link {% if request.resolver_match.url_name|slice:':8' == 'category' and request.resolver_match.namespace == 'catalog' %}is-active{% endif %}"
+        >
+            Categorías
+        </a>
+    {% endif %}
+
+    {% if perms.catalog.view_supplier %}
+        <a
+            href="{% url 'catalog:supplier_list' %}"
+            class="menu-link {% if request.resolver_match.url_name|slice:':8' == 'supplier' and request.resolver_match.namespace == 'catalog' %}is-active{% endif %}"
+        >
+            Proveedores
+        </a>
+    {% endif %}
+
+    {% if perms.inventory.view_stockmovement %}
+        <a
+            href="{% url 'inventory:movement_list' %}"
+            class="menu-link {% if request.resolver_match.namespace == 'inventory' %}is-active{% endif %}"
+        >
+            Movimientos
+        </a>
+    {% endif %}
+
+    <!-- REPORTES -->
+
+    {% if perms.catalog.view_product or perms.inventory.view_stockmovement %}
+        <a
+            href="{% if perms.catalog.view_product %}{% url 'reports:stock_report' %}{% else %}{% url 'reports:movements_report' %}{% endif %}"
+            class="menu-link {% if request.resolver_match.namespace == 'reports' %}is-active{% endif %}"
+        >
+            Reportes
+        </a>
+    {% endif %}
+
+    <!-- ADMINISTRACIÓN -->
+
+    {% if perms.accounts.manage_users %}
+        <p class="menu-section-label">ADMINISTRACIÓN</p>
+
+        <a
+            href="{% url 'accounts:user_list' %}"
+            class="menu-link {% if request.resolver_match.namespace == 'accounts' and request.resolver_match.url_name != 'login' and request.resolver_match.url_name != 'logout' and request.resolver_match.url_name != 'change_password' %}is-active{% endif %}"
+        >
+            Usuarios
+        </a>
+    {% endif %}
+</nav>

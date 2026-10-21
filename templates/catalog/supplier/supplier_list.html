@@ -1,0 +1,106 @@
+{% extends "base/layout.html" %}
+{% load static %}
+
+{% block title %}Proveedores | Inventory Management{% endblock %}
+
+{% block extra_head %}
+    <link rel="stylesheet" href="{% static 'css/suppliers.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="suppliers-page">
+
+    <div class="supplier-page-header">
+        <div>
+            <h1>Proveedores</h1>
+            <p>Administra los proveedores y sus datos de contacto.</p>
+        </div>
+
+        {% if perms.catalog.add_supplier %}
+            <a class="supplier-action-button" href="{% url 'catalog:supplier_create' %}">
+                + Registrar proveedor
+            </a>
+        {% endif %}
+    </div>
+
+    <div class="supplier-panel">
+        <div class="supplier-panel-heading">
+            <h2>Listado de proveedores</h2>
+        </div>
+
+        {% if suppliers %}
+            <div class="supplier-table-responsive">
+                <table class="supplier-table">
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>RUC</th>
+                            <th>Teléfono</th>
+                            <th>Correo</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for supplier in suppliers %}
+                            <tr>
+                                <td>
+                                    <span class="supplier-name">
+                                        {{ supplier.name }}
+                                    </span>
+                                </td>
+
+                                <td>{{ supplier.tax_id|default:"—" }}</td>
+                                <td>{{ supplier.phone|default:"—" }}</td>
+
+                                <td>
+                                    {% if supplier.email %}
+                                        <a href="mailto:{{ supplier.email }}">
+                                            {{ supplier.email }}
+                                        </a>
+                                    {% else %}
+                                        —
+                                    {% endif %}
+                                </td>
+
+                                <td>
+                                    {% if supplier.is_active %}
+                                        <span class="status-badge status-badge--success">
+                                            Activo
+                                        </span>
+                                    {% else %}
+                                        <span class="status-badge status-badge--neutral">
+                                            Inactivo
+                                        </span>
+                                    {% endif %}
+                                </td>
+
+                                <td>
+                                    <div class="supplier-table-actions">
+                                        <a href="{% url 'catalog:supplier_detail' supplier.pk %}">
+                                            Ver detalle
+                                        </a>
+
+                                        {% if perms.catalog.change_supplier %}
+                                            <a href="{% url 'catalog:supplier_update' supplier.pk %}">
+                                                Editar
+                                            </a>
+                                        {% endif %}
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="supplier-empty-state">
+                <h3>No hay proveedores registrados</h3>
+                <p>Los proveedores que registres aparecerán aquí.</p>
+            </div>
+        {% endif %}
+    </div>
+
+</section>
+{% endblock %}

@@ -1,0 +1,44 @@
+{% extends "base/layout.html" %}
+{% load static %}
+
+{% block title %}Registrar producto{% endblock %}
+
+{% block extra_head %}
+    <link rel="stylesheet" href="{% static 'css/products.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="products-page">
+
+    <div class="page-header">
+        <div>
+            <h1>Registrar producto</h1>
+            <p>Completa la información para añadir un nuevo producto al catálogo.</p>
+        </div>
+    </div>
+
+    <div class="product-form-panel">
+        <div class="panel-heading">
+            <h2>Información del producto</h2>
+            <p>El stock inicial se administra mediante movimientos de inventario.</p>
+        </div>
+
+        <form method="post" class="product-form">
+            {% csrf_token %}
+
+            {{ form.as_p }}
+
+            <div class="form-actions">
+                <button type="submit">
+                    Registrar producto
+                </button>
+
+                <a class="secondary-button" href="{% url 'catalog:product_list' %}">
+                    Cancelar
+                </a>
+            </div>
+        </form>
+    </div>
+
+</section>
+{% endblock %}

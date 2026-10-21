@@ -1,0 +1,113 @@
+{% extends "base/layout.html" %}
+{% load static %}
+
+{% block title %}{{ category.name }} | Categoría{% endblock %}
+
+{% block extra_head %}
+    <link rel="stylesheet" href="{% static 'css/categories.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="categories-page">
+
+    <div class="category-page-header">
+        <div>
+            <h1>{{ category.name }}</h1>
+            <p>Información y productos asociados a esta categoría.</p>
+        </div>
+
+        {% if perms.catalog.change_category %}
+            <a class="category-action-button" href="{% url 'catalog:category_update' category.pk %}">
+                Editar categoría
+            </a>
+        {% endif %}
+    </div>
+
+    <article class="category-detail-panel">
+        <div class="category-panel-heading">
+            <h2>Información general</h2>
+        </div>
+
+        <dl class="category-details">
+            <div>
+                <dt>Descripción</dt>
+                <dd>{{ category.description|default:"Sin descripción" }}</dd>
+            </div>
+
+            <div>
+                <dt>Estado</dt>
+                <dd>
+                    {% if category.is_active %}
+                        <span class="status-badge status-badge--success">
+                            Activa
+                        </span>
+                    {% else %}
+                        <span class="status-badge status-badge--neutral">
+                            Inactiva
+                        </span>
+                    {% endif %}
+                </dd>
+            </div>
+
+            <div>
+                <dt>Productos asociados</dt>
+                <dd>{{ category.products.count }}</dd>
+            </div>
+        </dl>
+    </article>
+
+    {% if perms.catalog.view_product %}
+        <section class="category-panel">
+            <div class="category-panel-heading">
+                <h2>Productos de esta categoría</h2>
+                <p>Productos vinculados a {{ category.name }}.</p>
+            </div>
+
+            <div class="category-table-responsive">
+                <table class="category-table">
+                    <thead>
+                        <tr>
+                            <th>Producto</th>
+                            <th>SKU</th>
+                            <th>Stock</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for product in category.products.all %}
+                            <tr>
+                                <td>
+                                    <span class="category-name">{{ product.name }}</span>
+                                </td>
+
+                                <td>{{ product.sku }}</td>
+                                <td>{{ product.stock }}</td>
+
+                                <td>
+                                    <a href="{% url 'catalog:product_detail' product.pk %}">
+                                        Ver producto
+                                    </a>
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="4" class="category-empty-row">
+                                    No hay productos asociados a esta categoría.
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    {% endif %}
+
+    <div class="category-footer-actions">
+        <a href="{% url 'catalog:category_list' %}">
+            ← Volver a categorías
+        </a>
+    </div>
+
+</section>
+{% endblock %}

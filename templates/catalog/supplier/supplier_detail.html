@@ -1,0 +1,133 @@
+{% extends "base/layout.html" %}
+{% load static %}
+
+{% block title %}{{ supplier.name }} | Proveedor{% endblock %}
+
+{% block extra_head %}
+    <link rel="stylesheet" href="{% static 'css/suppliers.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="suppliers-page">
+
+    <div class="supplier-page-header">
+        <div>
+            <h1>{{ supplier.name }}</h1>
+            <p>Información y productos asociados al proveedor.</p>
+        </div>
+
+        {% if perms.catalog.change_supplier %}
+            <a class="supplier-action-button" href="{% url 'catalog:supplier_update' supplier.pk %}">
+                Editar proveedor
+            </a>
+        {% endif %}
+    </div>
+
+    <article class="supplier-detail-panel">
+        <div class="supplier-panel-heading">
+            <h2>Información general</h2>
+        </div>
+
+        <dl class="supplier-details">
+            <div>
+                <dt>RUC</dt>
+                <dd>{{ supplier.tax_id|default:"No registrado" }}</dd>
+            </div>
+
+            <div>
+                <dt>Teléfono</dt>
+                <dd>{{ supplier.phone|default:"No registrado" }}</dd>
+            </div>
+
+            <div>
+                <dt>Correo electrónico</dt>
+                <dd>
+                    {% if supplier.email %}
+                        <a href="mailto:{{ supplier.email }}">
+                            {{ supplier.email }}
+                        </a>
+                    {% else %}
+                        No registrado
+                    {% endif %}
+                </dd>
+            </div>
+
+            <div>
+                <dt>Estado</dt>
+                <dd>
+                    {% if supplier.is_active %}
+                        <span class="status-badge status-badge--success">
+                            Activo
+                        </span>
+                    {% else %}
+                        <span class="status-badge status-badge--neutral">
+                            Inactivo
+                        </span>
+                    {% endif %}
+                </dd>
+            </div>
+
+            <div>
+                <dt>Productos asociados</dt>
+                <dd>{{ supplier.products.count }}</dd>
+            </div>
+        </dl>
+    </article>
+
+    {% if perms.catalog.view_product %}
+        <section class="supplier-panel">
+            <div class="supplier-panel-heading">
+                <h2>Productos asociados</h2>
+                <p>Productos registrados con este proveedor.</p>
+            </div>
+
+            <div class="supplier-table-responsive">
+                <table class="supplier-table">
+                    <thead>
+                        <tr>
+                            <th>Producto</th>
+                            <th>SKU</th>
+                            <th>Stock</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for product in supplier.products.all %}
+                            <tr>
+                                <td>
+                                    <span class="supplier-name">
+                                        {{ product.name }}
+                                    </span>
+                                </td>
+
+                                <td>{{ product.sku }}</td>
+                                <td>{{ product.stock }}</td>
+
+                                <td>
+                                    <a href="{% url 'catalog:product_detail' product.pk %}">
+                                        Ver producto
+                                    </a>
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="4" class="supplier-empty-row">
+                                    Este proveedor no tiene productos asociados.
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    {% endif %}
+
+    <div class="supplier-footer-actions">
+        <a href="{% url 'catalog:supplier_list' %}">
+            ← Volver a proveedores
+        </a>
+    </div>
+
+</section>
+{% endblock %}

@@ -1,0 +1,44 @@
+{% extends "base/layout.html" %}
+{% load static %}
+
+{% block title %}Registrar proveedor{% endblock %}
+
+{% block extra_head %}
+    <link rel="stylesheet" href="{% static 'css/suppliers.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="suppliers-page">
+
+    <div class="supplier-page-header">
+        <div>
+            <h1>Registrar proveedor</h1>
+            <p>Completa los datos del nuevo proveedor.</p>
+        </div>
+    </div>
+
+    <div class="supplier-form-panel">
+        <div class="supplier-panel-heading">
+            <h2>Información del proveedor</h2>
+            <p>Registra sus datos de identificación y contacto.</p>
+        </div>
+
+        <form method="post" class="supplier-form">
+            {% csrf_token %}
+
+            {{ form.as_p }}
+
+            <div class="supplier-form-actions">
+                <button type="submit">
+                    Guardar proveedor
+                </button>
+
+                <a class="supplier-secondary-button" href="{% url 'catalog:supplier_list' %}">
+                    Cancelar
+                </a>
+            </div>
+        </form>
+    </div>
+
+</section>
+{% endblock %}

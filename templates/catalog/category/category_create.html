@@ -1,0 +1,43 @@
+{% extends "base/layout.html" %}
+{% load static %}
+
+{% block title %}Registrar categoría{% endblock %}
+
+{% block extra_head %}
+    <link rel="stylesheet" href="{% static 'css/categories.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="categories-page">
+
+    <div class="category-page-header">
+        <div>
+            <h1>Registrar categoría</h1>
+            <p>Crea una nueva categoría para organizar los productos.</p>
+        </div>
+    </div>
+
+    <div class="category-form-panel">
+        <div class="category-panel-heading">
+            <h2>Información de la categoría</h2>
+        </div>
+
+        <form method="post" class="category-form">
+            {% csrf_token %}
+
+            {{ form.as_p }}
+
+            <div class="category-form-actions">
+                <button type="submit">
+                    Crear categoría
+                </button>
+
+                <a class="category-secondary-button" href="{% url 'catalog:category_list' %}">
+                    Cancelar
+                </a>
+            </div>
+        </form>
+    </div>
+
+</section>
+{% endblock %}

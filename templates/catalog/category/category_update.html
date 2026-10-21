@@ -1,0 +1,43 @@
+{% extends "base/layout.html" %}
+{% load static %}
+
+{% block title %}Editar categoría{% endblock %}
+
+{% block extra_head %}
+    <link rel="stylesheet" href="{% static 'css/categories.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="categories-page">
+
+    <div class="category-page-header">
+        <div>
+            <h1>Editar categoría</h1>
+            <p>Actualiza la información de {{ category.name }}.</p>
+        </div>
+    </div>
+
+    <div class="category-form-panel">
+        <div class="category-panel-heading">
+            <h2>Información de la categoría</h2>
+        </div>
+
+        <form method="post" class="category-form">
+            {% csrf_token %}
+
+            {{ form.as_p }}
+
+            <div class="category-form-actions">
+                <button type="submit">
+                    Guardar cambios
+                </button>
+
+                <a class="category-secondary-button" href="{% url 'catalog:category_detail' category.pk %}">
+                    Cancelar
+                </a>
+            </div>
+        </form>
+    </div>
+
+</section>
+{% endblock %}

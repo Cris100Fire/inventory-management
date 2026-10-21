@@ -1,0 +1,345 @@
+{% extends "base/layout.html" %}
+
+{% block title %}Reporte de existencias | Inventory Management{% endblock %}
+
+{% block content %}
+
+<div class="reports-page">
+    <header class="reports-header">
+        <div>
+            <span class="reports-eyebrow">
+                REPORTES / INVENTARIO
+            </span>
+
+            <h1>Reporte de existencias</h1>
+
+            <p>
+                Consulta las existencias actuales, los niveles de stock
+                y el valor estimado de los productos registrados.
+            </p>
+
+            <!-- NAVEGACIÓN ENTRE REPORTES -->
+
+            <nav class="reports-navigation" aria-label="Tipos de reportes">
+
+                <a
+                    href="{% url 'reports:stock_report' %}"
+                    class="reports-nav-link is-active"
+                    aria-current="page"
+                >
+                    Existencias
+                </a>
+
+                <a
+                    href="{% url 'reports:low_stock_report' %}"
+                    class="reports-nav-link"
+                >
+                    Stock bajo
+                </a>
+
+                <a
+                    href="{% url 'reports:movements_report' %}"
+                    class="reports-nav-link"
+                >
+                    Movimientos
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- FILTROS -->
+
+    <section class="reports-panel">
+
+        <div class="reports-panel-header">
+            <div>
+                <h2>Filtros de búsqueda</h2>
+
+                <p>
+                    Personaliza los resultados del reporte.
+                </p>
+            </div>
+        </div>
+
+        <form method="get" class="reports-filter-form">
+
+            <div class="reports-filter-grid">
+
+                <div class="reports-field">
+                    {{ form.search.label_tag }}
+                    {{ form.search }}
+                    {{ form.search.errors }}
+                </div>
+
+                <div class="reports-field">
+                    {{ form.category.label_tag }}
+                    {{ form.category }}
+                    {{ form.category.errors }}
+                </div>
+
+                <div class="reports-field">
+                    {{ form.supplier.label_tag }}
+                    {{ form.supplier }}
+                    {{ form.supplier.errors }}
+                </div>
+
+                <div class="reports-field">
+                    {{ form.stock_status.label_tag }}
+                    {{ form.stock_status }}
+                    {{ form.stock_status.errors }}
+                </div>
+
+                <div class="reports-field">
+                    {{ form.active_status.label_tag }}
+                    {{ form.active_status }}
+                    {{ form.active_status.errors }}
+                </div>
+
+            </div>
+
+            <div class="reports-filter-actions">
+
+                <a
+                    href="{% url 'reports:stock_report' %}"
+                    class="reports-btn reports-btn--secondary"
+                >
+                    Limpiar filtros
+                </a>
+
+                <button
+                    type="submit"
+                    class="reports-btn reports-btn--primary"
+                >
+                    Aplicar filtros
+                </button>
+
+            </div>
+
+        </form>
+
+    </section>
+
+    <!-- INDICADORES -->
+
+    <section
+        class="reports-summary"
+        aria-label="Resumen de existencias"
+    >
+
+        <article class="reports-stat">
+            <span>Productos</span>
+
+            <strong>
+                {{ summary.total_products }}
+            </strong>
+        </article>
+
+        <article class="reports-stat">
+            <span>Unidades en stock</span>
+
+            <strong>
+                {{ summary.total_units }}
+            </strong>
+        </article>
+
+        <article class="reports-stat reports-stat--warning">
+            <span>Stock bajo</span>
+
+            <strong>
+                {{ summary.low_stock }}
+            </strong>
+        </article>
+
+        <article class="reports-stat reports-stat--danger">
+            <span>Agotados</span>
+
+            <strong>
+                {{ summary.out_of_stock }}
+            </strong>
+        </article>
+
+        <article class="reports-stat reports-stat--value">
+            <span>Valor estimado</span>
+
+            <strong>
+                {{ summary.total_value|floatformat:2 }}
+            </strong>
+        </article>
+
+    </section>
+
+    <!-- DETALLE DE EXISTENCIAS -->
+
+    <section class="reports-panel">
+
+        <div class="reports-panel-header">
+
+            <div>
+                <h2>Detalle de existencias</h2>
+
+                <p>
+                    Productos que coinciden con los filtros seleccionados.
+                </p>
+            </div>
+
+            <!-- EXPORTACIONES -->
+
+            <div class="reports-table-actions">
+
+                <span class="reports-count">
+                    {{ summary.total_products }} productos
+                </span>
+
+                <a
+                    href="{% url 'reports:stock_export' 'csv' %}{% if filter_query %}?{{ filter_query }}{% endif %}"
+                    class="reports-btn reports-btn--secondary"
+                >
+                    Exportar CSV
+                </a>
+
+                <a
+                    href="{% url 'reports:stock_export' 'xlsx' %}{% if filter_query %}?{{ filter_query }}{% endif %}"
+                    class="reports-btn reports-btn--primary"
+                >
+                    Exportar Excel
+                </a>
+
+            </div>
+
+        </div>
+
+        <!-- TABLA -->
+
+        <div class="reports-table-wrap">
+
+            <table class="reports-table">
+
+                <thead>
+                    <tr>
+                        <th scope="col">Producto</th>
+                        <th scope="col">SKU</th>
+                        <th scope="col">Categoría</th>
+                        <th scope="col">Proveedor</th>
+                        <th scope="col">Precio</th>
+                        <th scope="col">Stock</th>
+                        <th scope="col">Mínimo</th>
+                        <th scope="col">Estado</th>
+                        <th scope="col">Valor estimado</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for product in products %}
+
+                        <tr>
+
+                            <td>
+                                <span class="reports-product-name">
+                                    {{ product.name }}
+                                </span>
+                            </td>
+
+                            <td>
+                                {{ product.sku }}
+                            </td>
+
+                            <td>
+                                {{ product.category.name }}
+                            </td>
+
+                            <td>
+                                {{ product.supplier.name|default:"Sin proveedor" }}
+                            </td>
+
+                            <td>
+                                {{ product.price|floatformat:2 }}
+                            </td>
+
+                            <td>
+                                {{ product.stock }}
+                            </td>
+
+                            <td>
+                                {{ product.minimum_stock }}
+                            </td>
+
+                            <td>
+
+                                {% if product.stock == 0 %}
+
+                                    <span class="status-badge status-badge--danger">
+                                        Agotado
+                                    </span>
+
+                                {% elif product.stock <= product.minimum_stock %}
+
+                                    <span class="status-badge status-badge--warning">
+                                        Stock bajo
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="status-badge status-badge--success">
+                                        Disponible
+                                    </span>
+
+                                {% endif %}
+
+                            </td>
+
+                            <td>
+                                {{ product.stock_value|floatformat:2 }}
+                            </td>
+
+                        </tr>
+
+                    {% empty %}
+
+                        <tr>
+                            <td colspan="9" class="reports-empty">
+                                No se encontraron productos que coincidan
+                                con los filtros seleccionados.
+                            </td>
+                        </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        <!-- PAGINACIÓN -->
+
+        {% if page_obj.has_other_pages %}
+            <div class="reports-pagination">
+                <span>
+                    Página {{ page_obj.number }}
+                    de {{ page_obj.paginator.num_pages }}
+                </span>
+
+                <div class="reports-pagination-actions">
+
+                    {% if page_obj.has_previous %}
+                        <a
+                            href="?{% if filter_query %}{{ filter_query }}&amp;{% endif %}page={{ page_obj.previous_page_number }}"
+                        >
+                            Anterior
+                        </a>
+                    {% endif %}
+
+                    {% if page_obj.has_next %}
+                        <a
+                            href="?{% if filter_query %}{{ filter_query }}&amp;{% endif %}page={{ page_obj.next_page_number }}"
+                        >
+                            Siguiente
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        {% endif %}
+    </section>
+</div>
+{% endblock %}

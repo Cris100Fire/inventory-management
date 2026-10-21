@@ -1,0 +1,29 @@
+{% extends "base/layout.html" %}
+
+{% block title %}Iniciar sesión | Inventory Management{% endblock %}
+
+{% block header %}{% endblock %}
+{% block sidebar %}{% endblock %}
+{% block layout_class %}auth-layout{% endblock %}
+{% block main_class %}auth-main{% endblock %}
+
+{% block content %}
+<section class="auth-page">
+  <div class="auth-brand">
+    <div class="auth-brand-icon">IM</div>
+    <h1>Inventory Management</h1>
+    <p>Sistema de gestión de inventario</p>
+  </div>
+
+  <div class="auth-card">
+    <div class="auth-card-header"><h2>Bienvenido de nuevo</h2><p>Inicia sesión para acceder a tu inventario.</p></div>
+    <form method="post" class="auth-form">
+      {% csrf_token %}
+      {{ form.as_p }}
+      {% if next %}<input type="hidden" name="next" value="{{ next }}">{% endif %}
+      <button type="submit" class="auth-submit">Iniciar sesión</button>
+    </form>
+  </div>
+  <p class="auth-bottom-text">Acceso seguro al sistema de inventario</p>
+</section>
+{% endblock %}

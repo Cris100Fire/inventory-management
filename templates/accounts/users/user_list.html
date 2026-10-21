@@ -1,0 +1,35 @@
+{% extends "base/layout.html" %}
+{% block title %}Usuarios | Inventory Management{% endblock %}
+{% block content %}
+<div class="accounts-page">
+    <header class="accounts-page-header">
+        <div><span class="accounts-eyebrow">ADMINISTRACIÓN / ACCESOS</span><h1>Gestión de usuarios</h1><p>Administra las cuentas, roles y permisos de acceso.</p></div>
+        <a class="ui-btn ui-btn--primary" href="{% url 'accounts:user_create' %}">+ Nuevo usuario</a>
+    </header>
+
+    <section class="users-panel" aria-labelledby="users-title">
+        <div class="accounts-panel-header users-panel-header"><div><h2 id="users-title">Directorio de usuarios</h2><p>Consulta y administra las cuentas registradas.</p></div>{% if page_obj %}<span class="users-count">{{ page_obj.paginator.count }} usuario{{ page_obj.paginator.count|pluralize }}</span>{% endif %}</div>
+        
+        <form method="get" class="users-filters" role="search">
+            <div class="users-filter-field"><label for="users-search">Buscar usuario</label><input id="users-search" type="search" name="q" placeholder="Usuario o correo..." value="{{ search_query|default:'' }}"></div>
+            <div class="users-filter-field"><label for="users-role">Rol</label><select id="users-role" name="role"><option value="">Todos los roles</option>{% for role in roles %}<option value="{{ role.name }}" {% if selected_role == role.name %}selected{% endif %}>{{ role.name }}</option>{% endfor %}</select></div>
+            <div class="users-filter-field"><label for="users-status">Estado</label><select id="users-status" name="status"><option value="">Todos los estados</option><option value="active" {% if selected_status == 'active' %}selected{% endif %}>Activos</option><option value="inactive" {% if selected_status == 'inactive' %}selected{% endif %}>Inactivos</option></select></div>
+            <div class="users-filter-actions"><button class="ui-btn ui-btn--primary" type="submit">Filtrar</button><a class="ui-btn ui-btn--secondary" href="{% url 'accounts:user_list' %}">Limpiar</a></div>
+        </form>
+        
+        <div class="users-table-wrap"><table class="users-table"><thead><tr><th scope="col">Usuario</th><th scope="col">Rol</th><th scope="col">Estado</th><th scope="col">Último acceso</th><th scope="col">Acciones</th></tr></thead><tbody>
+            {% for account in users %}
+            <tr>
+                <td><div class="users-identity"><span class="users-avatar" aria-hidden="true">{{ account.username|slice:':1'|upper }}</span><div class="users-identity-text"><span class="users-name">{{ account.username }}</span><span class="users-email">{{ account.email|default:'Sin correo registrado' }}</span></div></div></td>
+                <td><div class="users-roles">{% for group in account.groups.all %}<span class="users-role">{{ group.name }}</span>{% empty %}<span class="users-muted">Sin rol</span>{% endfor %}</div></td>
+                <td>{% if account.is_active %}<span class="users-status users-status--active">Activo</span>{% else %}<span class="users-status users-status--inactive">Inactivo</span>{% endif %}</td>
+                <td><span class="users-last-login">{{ account.last_login|date:'d/m/Y H:i'|default:'Nunca' }}</span></td>
+                <td>{% if not account.is_superuser and account.pk != request.user.pk %}<div class="users-row-actions"><a class="users-action-link" href="{% url 'accounts:user_update' account.pk %}" aria-label="Editar usuario {{ account.username }}">Editar</a><a class="users-action-link" href="{% url 'accounts:user_password_reset' account.pk %}" aria-label="Restablecer contraseña de {{ account.username }}">Contraseña</a><form method="post" class="users-inline-form" action="{% url 'accounts:user_toggle_active' account.pk %}">{% csrf_token %}{% if account.is_active %}<input type="hidden" name="action" value="deactivate"><button class="users-action-link users-action-link--danger" type="submit" onclick="return confirm('¿Desactivar a {{ account.username|escapejs }}?');">Desactivar</button>{% else %}<input type="hidden" name="action" value="activate"><button class="users-action-link users-action-link--success" type="submit">Activar</button>{% endif %}</form></div>{% else %}<span class="users-muted">{% if account.is_superuser %}Protegido{% else %}Tu cuenta{% endif %}</span>{% endif %}</td>
+            </tr>
+            {% empty %}<tr><td colspan="5"><div class="users-empty"><span class="users-empty-icon" aria-hidden="true">◎</span><h3>No se encontraron usuarios</h3><p>Prueba con otros criterios de búsqueda.</p><a class="ui-btn ui-btn--secondary" href="{% url 'accounts:user_list' %}">Ver todos</a></div></td></tr>{% endfor %}
+        </tbody></table></div>
+        
+        {% if is_paginated %}<nav class="users-pagination" aria-label="Paginación de usuarios"><span class="users-pagination-info">Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span><div class="users-pagination-actions">{% if page_obj.has_previous %}<a class="ui-btn ui-btn--secondary" href="?q={{ search_query|default:''|urlencode }}&role={{ selected_role|default:''|urlencode }}&status={{ selected_status|default:''|urlencode }}&page={{ page_obj.previous_page_number }}">← Anterior</a>{% endif %}{% if page_obj.has_next %}<a class="ui-btn ui-btn--secondary" href="?q={{ search_query|default:''|urlencode }}&role={{ selected_role|default:''|urlencode }}&status={{ selected_status|default:''|urlencode }}&page={{ page_obj.next_page_number }}">Siguiente →</a>{% endif %}</div></nav>{% endif %}
+    </section>
+</div>
+{% endblock %}

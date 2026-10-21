@@ -1,0 +1,66 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{% block title %}Inventory Management{% endblock %}</title>
+
+    <script>
+        (function () {
+            const savedTheme = localStorage.getItem("inventory-theme");
+
+            const systemDark = window.matchMedia(
+                "(prefers-color-scheme: dark)"
+            ).matches;
+
+            const theme = savedTheme === "dark" || savedTheme === "light"
+                ? savedTheme
+                : systemDark ? "dark" : "light";
+
+            document.documentElement.dataset.theme = theme;
+        })();
+    </script>
+
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <link rel="stylesheet" href="{% static 'css/layout.css' %}">
+    <link rel="stylesheet" href="{% static 'css/components.css' %}">
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+    <link rel="stylesheet" href="{% static 'css/inventory.css' %}">
+    <link rel="stylesheet" href="{% static 'css/accounts.css' %}">
+    <link rel="stylesheet" href="{% static 'css/reports.css' %}">
+
+    {% block extra_head %}{% endblock %}
+</head>
+
+
+<body>
+    {% block header %}
+        {% include "_includes/_header.html" %}
+    {% endblock %}
+
+    <div class="{% block layout_class %}app-layout{% endblock %}">
+
+        {% block sidebar %}
+            {% include "_includes/_main_menu.html" %}
+        {% endblock %}
+
+        <main class="{% block main_class %}main-content{% endblock %}">
+            {% include "_includes/_messages.html" %}
+            {% block content %}{% endblock %}
+        </main>
+
+    </div>
+
+    {% block footer %}
+        {% include "_includes/_footer.html" %}
+    {% endblock %}
+
+    <script src="{% static 'js/theme.js' %}" defer></script>
+
+    {% block extra_js %}{% endblock %}
+</body>
+
+</html>

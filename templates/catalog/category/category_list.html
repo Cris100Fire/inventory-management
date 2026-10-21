@@ -1,0 +1,93 @@
+{% extends "base/layout.html" %}
+{% load static %}
+
+{% block title %}Categorías | Inventory Management{% endblock %}
+
+{% block extra_head %}
+    <link rel="stylesheet" href="{% static 'css/categories.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="categories-page">
+
+    <div class="category-page-header">
+        <div>
+            <h1>Categorías</h1>
+            <p>Organiza y administra las categorías de tus productos.</p>
+        </div>
+
+        {% if perms.catalog.add_category %}
+            <a class="category-action-button" href="{% url 'catalog:category_create' %}">
+                + Registrar categoría
+            </a>
+        {% endif %}
+    </div>
+
+    <div class="category-panel">
+        <div class="category-panel-heading">
+            <h2>Listado de categorías</h2>
+        </div>
+
+        {% if categories %}
+            <div class="category-table-responsive">
+                <table class="category-table">
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Estado</th>
+                            <th>Productos</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for category in categories %}
+                            <tr>
+                                <td>
+                                    <span class="category-name">
+                                        {{ category.name }}
+                                    </span>
+                                </td>
+
+                                <td>
+                                    {% if category.is_active %}
+                                        <span class="status-badge status-badge--success">
+                                            Activa
+                                        </span>
+                                    {% else %}
+                                        <span class="status-badge status-badge--neutral">
+                                            Inactiva
+                                        </span>
+                                    {% endif %}
+                                </td>
+
+                                <td>{{ category.products.count }}</td>
+
+                                <td>
+                                    <div class="category-table-actions">
+                                        <a href="{% url 'catalog:category_detail' category.pk %}">
+                                            Ver detalle
+                                        </a>
+
+                                        {% if perms.catalog.change_category %}
+                                            <a href="{% url 'catalog:category_update' category.pk %}">
+                                                Editar
+                                            </a>
+                                        {% endif %}
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="category-empty-state">
+                <h3>No hay categorías registradas</h3>
+                <p>Las categorías que registres aparecerán aquí.</p>
+            </div>
+        {% endif %}
+    </div>
+
+</section>
+{% endblock %}

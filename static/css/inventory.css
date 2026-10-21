@@ -1,0 +1,246 @@
+/* =========================================
+   INVENTORY - FILTROS
+========================================= */
+
+.inventory-page .movement-filters {
+  display: flex;
+  align-items: end;
+  flex-wrap: wrap;
+  gap: 16px;
+
+  max-width: none;
+  padding: 24px 26px;
+
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.filter-field {
+  display: flex;
+  flex: 1 1 220px;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.filter-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* =========================================
+   INVENTORY - TABLA
+========================================= */
+
+.inventory-page .inventory-table {
+  min-width: 850px;
+}
+
+.movement-product {
+  font-weight: 650;
+  color: var(--color-text);
+}
+
+.inventory-empty-row {
+  padding: 32px !important;
+  text-align: center;
+  color: var(--color-text-secondary);
+}
+
+/* =========================================
+   INVENTORY - TIPOS DE MOVIMIENTO
+========================================= */
+
+/* ENTRADA */
+
+.movement-badge--entry {
+  background: color-mix(
+    in srgb,
+    var(--color-success) 12%,
+    var(--color-surface)
+  );
+  color: var(--color-success);
+}
+
+/* SALIDA */
+
+.movement-badge--exit {
+  background: color-mix(in srgb, var(--color-danger) 12%, var(--color-surface));
+  color: var(--color-danger);
+}
+
+/* AJUSTES */
+
+.movement-badge--adjustment {
+  background: color-mix(
+    in srgb,
+    var(--color-warning) 12%,
+    var(--color-surface)
+  );
+  color: var(--color-warning);
+}
+
+/* CANTIDADES */
+
+.movement-quantity {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.movement-quantity--positive {
+  color: var(--color-success);
+}
+
+.movement-quantity--negative {
+  color: var(--color-danger);
+}
+
+/* =========================================
+   INVENTORY - PAGINACIÓN
+========================================= */
+
+.inventory-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+
+  padding: 18px 26px;
+  border-top: 1px solid var(--color-border);
+
+  color: var(--color-text-secondary);
+  font-size: 13px;
+}
+
+.pagination-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.pagination-actions a {
+  padding: 8px 14px;
+
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+
+  background: var(--color-surface);
+  color: var(--color-text);
+  text-decoration: none;
+}
+
+.pagination-actions a:hover {
+  background: var(--color-surface-hover);
+}
+
+/* =========================================
+   INVENTORY - GRIDS
+========================================= */
+
+.movement-create-grid,
+.movement-detail-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(260px, 1fr);
+  align-items: start;
+  gap: 22px;
+}
+
+/* =========================================
+   INVENTORY - PANEL DE AYUDA
+========================================= */
+
+.movement-help-panel {
+  padding: 26px;
+}
+
+.movement-help-panel h2 {
+  margin: 0 0 24px;
+  font-size: 17px;
+}
+
+.movement-help-item {
+  padding: 16px 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.movement-help-item:first-of-type {
+  padding-top: 0;
+}
+
+.movement-help-item p {
+  margin: 10px 0 0;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.movement-help-note {
+  margin-top: 24px;
+  padding: 14px;
+
+  background: var(--color-surface-hover);
+  border-radius: var(--radius-md);
+
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+/* =========================================
+   INVENTORY - DETALLE
+========================================= */
+
+.movement-notes {
+  grid-column: 1 / -1;
+}
+
+.movement-summary-panel {
+  padding: 26px;
+}
+
+.movement-summary-panel h2 {
+  margin: 0 0 24px;
+  font-size: 17px;
+}
+
+.movement-summary-value {
+  margin: 0;
+  font-size: 54px;
+  font-weight: 750;
+  letter-spacing: -0.05em;
+  line-height: 1.1;
+}
+
+.movement-summary-value--positive {
+  color: var(--color-success) !important;
+}
+
+.movement-summary-value--negative {
+  color: var(--color-danger) !important;
+}
+
+.movement-summary-panel p:last-child {
+  font-size: 13px;
+}
+
+/* =========================================
+   INVENTORY - RESPONSIVE
+========================================= */
+
+@media (max-width: 950px) {
+  .movement-create-grid,
+  .movement-detail-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 650px) {
+  .inventory-page .movement-filters {
+    padding: 18px;
+  }
+
+  .inventory-pagination {
+    padding: 16px;
+  }
+}

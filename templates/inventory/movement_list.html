@@ -1,0 +1,185 @@
+{% extends "base/layout.html" %}
+{% comment %} {% load static %} {% endcomment %}
+
+{% block title %}Movimientos de inventario{% endblock %}
+
+{% comment %} {% block extra_head %}
+    <link rel="stylesheet" href="{% static 'css/inventory.css' %}">
+{% endblock %} {% endcomment %}
+
+{% block content %}
+<section class="inventory-page">
+
+    <div class="inventory-page-header">
+        <div>
+            <h1>Movimientos de inventario</h1>
+            <p>Consulta las entradas, salidas y ajustes de stock.</p>
+        </div>
+
+        {% if perms.inventory.add_stockmovement %}
+            <a class="inventory-action-button" href="{% url 'inventory:movement_create' %}">
+                + Registrar movimiento
+            </a>
+        {% endif %}
+    </div>
+
+    <!-- FILTROS -->
+
+    <div class="inventory-panel">
+        <div class="inventory-panel-heading">
+            <h2>Filtrar movimientos</h2>
+        </div>
+
+        <form method="get" class="movement-filters">
+            <div class="filter-field">
+                <label for="search">Buscar movimientos</label>
+
+                <input
+                    type="search"
+                    id="search"
+                    name="q"
+                    value="{{ request.GET.q|default:'' }}"
+                    placeholder="Producto o usuario..."
+                >
+            </div>
+
+            <div class="filter-field">
+                <label for="movement_type">Tipo de movimiento</label>
+
+                <select id="movement_type" name="movement_type">
+                    <option value="">Todos los movimientos</option>
+
+                    {% for value, label in movement_types %}
+                        <option
+                            value="{{ value }}"
+                            {% if request.GET.movement_type == value %}selected{% endif %}
+                        >
+                            {{ label }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="filter-actions">
+                <button type="submit">Aplicar filtros</button>
+
+                {% if request.GET.q or request.GET.movement_type %}
+                    <a class="inventory-secondary-button" href="{% url 'inventory:movement_list' %}">
+                        Limpiar
+                    </a>
+                {% endif %}
+            </div>
+        </form>
+    </div>
+
+    <!-- HISTORIAL -->
+
+    <div class="inventory-panel">
+        <div class="inventory-panel-heading">
+            <h2>Historial de movimientos</h2>
+            <p>Operaciones registradas en orden cronológico.</p>
+        </div>
+
+        <div class="inventory-table-responsive">
+            <table class="inventory-table">
+                <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Producto</th>
+                        <th>Tipo</th>
+                        <th>Cantidad</th>
+                        <th>Usuario</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for movement in movements %}
+                        <tr>
+                            <td>{{ movement.created_at|date:"d/m/Y H:i" }}</td>
+
+                            <td>
+                                <span class="movement-product">
+                                    {{ movement.product.name }}
+                                </span>
+                            </td>
+
+                            <td>
+                                {% if movement.movement_type == "ENTRY" %}
+                                    <span class="movement-badge movement-badge--entry">
+                                        Entrada
+                                    </span>
+                                {% elif movement.movement_type == "EXIT" %}
+                                    <span class="movement-badge movement-badge--exit">
+                                        Salida
+                                    </span>
+                                {% elif movement.movement_type == "ADJUSTMENT_IN" %}
+                                    <span class="movement-badge movement-badge--adjustment">
+                                        Ajuste de entrada
+                                    </span>
+                                {% elif movement.movement_type == "ADJUSTMENT_OUT" %}
+                                    <span class="movement-badge movement-badge--adjustment">
+                                        Ajuste de salida
+                                    </span>
+                                {% endif %}
+                            </td>
+
+                            <td>
+                                {% if movement.movement_type == "ENTRY" or movement.movement_type == "ADJUSTMENT_IN" %}
+                                    <span class="movement-quantity movement-quantity--positive">
+                                        +{{ movement.quantity }}
+                                    </span>
+                                {% else %}
+                                    <span class="movement-quantity movement-quantity--negative">
+                                        −{{ movement.quantity }}
+                                    </span>
+                                {% endif %}
+                            </td>
+
+                            <td>{{ movement.user.username }}</td>
+
+                            <td>
+                                <a href="{% url 'inventory:movement_detail' movement.pk %}">
+                                    Ver detalle
+                                </a>
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="6" class="inventory-empty-row">
+                                No se encontraron movimientos de inventario.
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- PAGINACIÓN -->
+
+        {% if is_paginated %}
+            <nav class="inventory-pagination" aria-label="Paginación de movimientos">
+
+                <span>
+                    Página {{ page_obj.number }} de {{ paginator.num_pages }}
+                </span>
+
+                <div class="pagination-actions">
+                    {% if page_obj.has_previous %}
+                        <a href="{% querystring page=page_obj.previous_page_number %}">
+                            ← Anterior
+                        </a>
+                    {% endif %}
+
+                    {% if page_obj.has_next %}
+                        <a href="{% querystring page=page_obj.next_page_number %}">
+                            Siguiente →
+                        </a>
+                    {% endif %}
+                </div>
+            </nav>
+        {% endif %}
+    </div>
+
+</section>
+{% endblock %}

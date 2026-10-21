@@ -1,0 +1,43 @@
+{% extends "base/layout.html" %}
+{% load static %}
+
+{% block title %}Editar proveedor{% endblock %}
+
+{% block extra_head %}
+    <link rel="stylesheet" href="{% static 'css/suppliers.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="suppliers-page">
+
+    <div class="supplier-page-header">
+        <div>
+            <h1>Editar proveedor</h1>
+            <p>Actualiza los datos de {{ supplier.name }}.</p>
+        </div>
+    </div>
+
+    <div class="supplier-form-panel">
+        <div class="supplier-panel-heading">
+            <h2>Información del proveedor</h2>
+        </div>
+
+        <form method="post" class="supplier-form">
+            {% csrf_token %}
+
+            {{ form.as_p }}
+
+            <div class="supplier-form-actions">
+                <button type="submit">
+                    Guardar cambios
+                </button>
+
+                <a class="supplier-secondary-button" href="{% url 'catalog:supplier_detail' supplier.pk %}">
+                    Cancelar
+                </a>
+            </div>
+        </form>
+    </div>
+
+</section>
+{% endblock %}

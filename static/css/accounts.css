@@ -1,0 +1,640 @@
+/* Accounts: login, directory, account forms. Uses base.css tokens. */
+.auth-layout {
+  display: block;
+  min-height: calc(100vh - 70px);
+}
+.auth-main {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 70px);
+  padding: 48px 20px;
+}
+.auth-page {
+  width: 100%;
+  max-width: 450px;
+}
+.auth-brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 8px;
+  margin-bottom: 30px;
+}
+.auth-brand-icon {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  margin-bottom: 8px;
+  border-radius: 16px;
+  background: var(--color-primary);
+  color: #fff;
+  font-weight: 800;
+  letter-spacing: -0.05em;
+  box-shadow: 0 8px 24px
+    color-mix(in srgb, var(--color-primary) 18%, transparent);
+}
+.auth-brand h1 {
+  margin: 0;
+  color: var(--color-text);
+  font-size: 24px;
+  letter-spacing: -0.04em;
+}
+.auth-brand p,
+.auth-bottom-text {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+}
+.auth-card,
+.account-panel,
+.users-panel {
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-card);
+}
+.auth-card-header {
+  text-align: center;
+  padding: 30px 30px 8px;
+}
+.auth-card-header h2 {
+  margin: 0 0 7px;
+  color: var(--color-text);
+  font-size: 21px;
+}
+.auth-card-header p {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+}
+.auth-form {
+  display: grid;
+  gap: 18px;
+  padding: 24px 30px 30px;
+}
+.auth-form p {
+  display: grid;
+  gap: 7px;
+  margin: 0;
+}
+.auth-form .auth-submit {
+  width: 100%;
+  min-height: 46px;
+}
+.auth-bottom-text {
+  text-align: center;
+  margin-top: 22px;
+}
+.auth-form .helptext,
+.account-form .helptext,
+.account-form .form-help {
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--color-text-secondary);
+}
+.auth-form .helptext ul,
+.account-form .helptext ul,
+.account-form .form-help ul {
+  margin: 6px 0 0;
+  padding-left: 18px;
+}
+.auth-form ul:not(.errorlist) {
+  margin: 0;
+  padding-left: 18px;
+  color: var(--color-text-secondary);
+  font-size: 12px;
+}
+
+/* Shared account page composition */
+.accounts-page {
+  display: grid;
+  gap: 24px;
+  min-width: 0;
+}
+.accounts-page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.accounts-eyebrow {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 11px;
+  font-weight: 750;
+  letter-spacing: 0.12em;
+  color: var(--color-primary);
+}
+.accounts-page-header h1 {
+  margin: 0 0 8px;
+  font-size: clamp(26px, 3vw, 34px);
+  letter-spacing: -0.04em;
+}
+.accounts-page-header p {
+  margin: 0;
+  font-size: 14px;
+  color: var(--color-text-secondary);
+}
+.accounts-panel-header {
+  padding: 23px 26px;
+  border-bottom: 1px solid var(--color-border);
+}
+.accounts-panel-header h2 {
+  margin: 0 0 6px;
+  font-size: 18px;
+}
+.accounts-panel-header p {
+  margin: 0;
+  font-size: 13px;
+  color: var(--color-text-secondary);
+}
+.account-notice {
+  margin: 24px 26px 0;
+  padding: 14px 16px;
+  border-left: 3px solid var(--color-primary);
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--color-primary) 7%, var(--color-surface));
+  color: var(--color-text);
+  font-size: 13px;
+}
+.account-notice--warning {
+  border-left-color: var(--color-warning);
+  background: color-mix(in srgb, var(--color-warning) 8%, var(--color-surface));
+}
+
+/* Buttons, intentionally explicit to avoid the global button selectors */
+.ui-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 42px;
+  padding: 10px 16px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  font-size: 13px;
+  font-weight: 650;
+  line-height: 1.3;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background 0.2s,
+    border-color 0.2s,
+    transform 0.2s;
+}
+.ui-btn--primary {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: #fff;
+}
+.ui-btn--primary:hover {
+  background: var(--color-primary-hover);
+  border-color: var(--color-primary-hover);
+  color: #fff;
+}
+.ui-btn--secondary {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+  color: var(--color-text);
+}
+.ui-btn--secondary:hover {
+  background: var(--color-surface-hover);
+  color: var(--color-text);
+}
+.ui-btn:active {
+  transform: translateY(1px);
+}
+
+/* Create, edit, reset and mandatory password change */
+.main-content .account-form {
+  display: grid;
+  gap: 20px;
+  max-width: none;
+  margin: 0;
+  padding: 26px;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  background: transparent;
+}
+.account-fields {
+  display: grid;
+  gap: 20px;
+  max-width: 720px;
+}
+.account-field {
+  display: grid;
+  gap: 7px;
+  min-width: 0;
+}
+.account-field label {
+  font-size: 13px;
+  font-weight: 650;
+  color: var(--color-text);
+}
+.account-field :is(input, select, textarea) {
+  max-width: 100%;
+}
+.account-field .errorlist {
+  margin: 2px 0 0;
+}
+.account-field .helptext {
+  display: block;
+}
+.account-field .helptext ul {
+  margin: 4px 0 0;
+}
+.account-form .account-form-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding-top: 20px;
+  border-top: 1px solid var(--color-border);
+}
+.account-form .account-form-actions .ui-btn {
+  min-width: 120px;
+}
+.account-form .errorlist {
+  font-size: 12px;
+}
+
+/* Directory */
+.users-panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.users-count {
+  padding: 6px 11px;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  background: var(--color-surface-hover);
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  font-weight: 650;
+}
+.main-content .users-filters {
+  display: grid;
+  grid-template-columns: minmax(210px, 2fr) repeat(2, minmax(145px, 1fr)) auto;
+  gap: 14px;
+  align-items: end;
+  max-width: none;
+  margin: 0;
+  padding: 22px 26px;
+  border: 0;
+  border-bottom: 1px solid var(--color-border);
+  border-radius: 0;
+  box-shadow: none;
+  background: transparent;
+}
+.users-filter-field {
+  display: grid;
+  gap: 7px;
+  min-width: 0;
+}
+.users-filter-field label {
+  font-size: 12px;
+  font-weight: 650;
+}
+.users-filter-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.users-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+}
+.main-content .users-table {
+  width: 100%;
+  min-width: 800px;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+.users-table th {
+  white-space: nowrap;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 11px;
+}
+.users-table td {
+  vertical-align: middle;
+}
+.users-identity {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 180px;
+}
+.users-avatar {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  background: color-mix(
+    in srgb,
+    var(--color-primary) 12%,
+    var(--color-surface)
+  );
+  color: var(--color-primary);
+  font-weight: 750;
+}
+.users-identity-text {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+.users-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--color-text);
+  overflow-wrap: anywhere;
+}
+.users-email,
+.users-muted,
+.users-last-login {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  overflow-wrap: anywhere;
+}
+.users-roles {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.users-role {
+  padding: 5px 10px;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  background: var(--color-surface-hover);
+  font-size: 11px;
+  font-weight: 650;
+  white-space: nowrap;
+}
+.users-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.users-status::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+}
+.users-status--active {
+  background: color-mix(
+    in srgb,
+    var(--color-success) 12%,
+    var(--color-surface)
+  );
+  color: var(--color-success);
+}
+.users-status--inactive {
+  background: color-mix(in srgb, var(--color-danger) 10%, var(--color-surface));
+  color: var(--color-danger);
+}
+.users-row-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 7px;
+  min-width: 220px;
+}
+.users-action-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 34px;
+  padding: 7px 10px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-size: 12px;
+  font-weight: 650;
+  line-height: 1.2;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.users-action-link:hover {
+  background: var(--color-surface-hover);
+  color: var(--color-text);
+}
+.users-action-link--danger {
+  color: var(--color-danger);
+  border-color: color-mix(
+    in srgb,
+    var(--color-danger) 25%,
+    var(--color-border)
+  );
+}
+.users-action-link--danger:hover {
+  background: color-mix(in srgb, var(--color-danger) 9%, var(--color-surface));
+  color: var(--color-danger);
+}
+.users-action-link--success {
+  color: var(--color-success);
+  border-color: color-mix(
+    in srgb,
+    var(--color-success) 25%,
+    var(--color-border)
+  );
+}
+.users-action-link--success:hover {
+  background: color-mix(in srgb, var(--color-success) 9%, var(--color-surface));
+  color: var(--color-success);
+}
+.main-content .users-inline-form {
+  display: inline-flex;
+  max-width: none;
+  width: auto;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  background: transparent;
+}
+.users-empty {
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  padding: 52px 24px;
+  text-align: center;
+}
+.users-empty-icon {
+  display: grid;
+  place-items: center;
+  width: 54px;
+  height: 54px;
+  border-radius: 16px;
+  background: var(--color-surface-hover);
+  color: var(--color-text-secondary);
+  font-size: 28px;
+}
+.users-empty h3,
+.users-empty p {
+  margin: 0;
+}
+.users-empty p {
+  font-size: 13px;
+}
+.users-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 18px 26px;
+  border-top: 1px solid var(--color-border);
+}
+.users-pagination-info {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+}
+.users-pagination-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 1100px) {
+  .main-content .users-filters {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 650px) {
+  .auth-main {
+    padding: 32px 16px;
+  }
+  .auth-card-header {
+    padding: 26px 20px 8px;
+  }
+  .auth-form {
+    padding: 20px;
+  }
+  .accounts-page-header {
+    align-items: stretch;
+  }
+  .accounts-page-header > .ui-btn {
+    width: 100%;
+  }
+  .accounts-panel-header,
+  .main-content .account-form,
+  .main-content .users-filters,
+  .users-pagination {
+    padding: 18px;
+  }
+  .main-content .users-filters {
+    grid-template-columns: 1fr;
+  }
+  .users-filter-actions {
+    width: 100%;
+  }
+  .users-filter-actions .ui-btn {
+    flex: 1;
+  }
+  .account-form .account-form-actions .ui-btn {
+    flex: 1;
+  }
+  .users-pagination-actions {
+    width: 100%;
+  }
+  .users-pagination-actions .ui-btn {
+    flex: 1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ui-btn {
+    transition: none;
+  }
+}
+
+/* Django form.as_p: retain native field rendering and validation */
+.account-form > p {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin: 0;
+  max-width: 720px;
+}
+.account-form > p > label {
+  font-weight: 650;
+}
+.account-form > p > .helptext {
+  display: block;
+}
+.account-form > .errorlist {
+  margin: 0;
+}
+.account-form .form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  max-width: 720px;
+}
+.account-form .form-group .errorlist {
+  margin: 0;
+}
+.account-form .form-help {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+}
+.account-form .form-help ul {
+  margin: 6px 0 0;
+  padding-left: 18px;
+}
+/* Keep small table action buttons from inheriting the global primary button style */
+.main-content .users-inline-form button.users-action-link {
+  min-height: 34px;
+  padding: 7px 10px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+  font-size: 12px;
+}
+.main-content .users-inline-form button.users-action-link--danger {
+  color: var(--color-danger);
+  border-color: color-mix(
+    in srgb,
+    var(--color-danger) 25%,
+    var(--color-border)
+  );
+}
+.main-content .users-inline-form button.users-action-link--danger:hover {
+  background: color-mix(in srgb, var(--color-danger) 9%, var(--color-surface));
+  color: var(--color-danger);
+}
+.main-content .users-inline-form button.users-action-link--success {
+  color: var(--color-success);
+  border-color: color-mix(
+    in srgb,
+    var(--color-success) 25%,
+    var(--color-border)
+  );
+}
+.main-content .users-inline-form button.users-action-link--success:hover {
+  background: color-mix(in srgb, var(--color-success) 9%, var(--color-surface));
+  color: var(--color-success);
+}

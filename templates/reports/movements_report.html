@@ -1,0 +1,276 @@
+{% extends "base/layout.html" %}
+
+{% block title %}Reporte de movimientos | Inventory Management{% endblock %}
+
+{% block content %}
+
+<div class="reports-page">
+    <header class="reports-header">
+        <div>
+            <span class="reports-eyebrow">
+                REPORTES / INVENTARIO
+            </span>
+
+            <h1>Historial de movimientos</h1>
+
+            <p>
+                Analiza las entradas, salidas y ajustes de inventario,
+                incluyendo las fechas y los usuarios responsables.
+            </p>
+
+            <!-- NAVEGACIÓN -->
+
+            <nav class="reports-navigation" aria-label="Tipos de reportes">
+
+                {% if perms.catalog.view_product %}
+                    <a
+                        href="{% url 'reports:stock_report' %}"
+                        class="reports-nav-link"
+                    >
+                        Existencias
+                    </a>
+
+                    <a
+                        href="{% url 'reports:low_stock_report' %}"
+                        class="reports-nav-link"
+                    >
+                        Stock bajo
+                    </a>
+                {% endif %}
+
+                <a
+                    href="{% url 'reports:movements_report' %}"
+                    class="reports-nav-link is-active"
+                    aria-current="page"
+                >
+                    Movimientos
+                </a>
+
+            </nav>
+        </div>
+    </header>
+
+    <!-- FILTROS -->
+
+    <section class="reports-panel">
+
+        <div class="reports-panel-header">
+            <div>
+                <h2>Filtros de búsqueda</h2>
+                <p>Consulta los movimientos registrados.</p>
+            </div>
+        </div>
+
+        <form method="get" class="reports-filter-form">
+
+            <div class="reports-filter-grid">
+
+                <div class="reports-field">
+                    {{ form.start_date.label_tag }}
+                    {{ form.start_date }}
+                    {{ form.start_date.errors }}
+                </div>
+
+                <div class="reports-field">
+                    {{ form.end_date.label_tag }}
+                    {{ form.end_date }}
+                    {{ form.end_date.errors }}
+                </div>
+
+                <div class="reports-field">
+                    {{ form.product.label_tag }}
+                    {{ form.product }}
+                    {{ form.product.errors }}
+                </div>
+
+                <div class="reports-field">
+                    {{ form.movement_type.label_tag }}
+                    {{ form.movement_type }}
+                    {{ form.movement_type.errors }}
+                </div>
+
+                <div class="reports-field">
+                    {{ form.user.label_tag }}
+                    {{ form.user }}
+                    {{ form.user.errors }}
+                </div>
+
+            </div>
+
+            <div class="reports-filter-actions">
+
+                <a
+                    href="{% url 'reports:movements_report' %}"
+                    class="reports-btn reports-btn--secondary"
+                >
+                    Limpiar filtros
+                </a>
+
+                <button
+                    type="submit"
+                    class="reports-btn reports-btn--primary"
+                >
+                    Aplicar filtros
+                </button>
+
+            </div>
+
+        </form>
+
+    </section>
+
+    <!-- INDICADORES -->
+
+    <section class="reports-summary" aria-label="Resumen de movimientos">
+
+        <article class="reports-stat">
+            <span>Movimientos</span>
+            <strong>{{ summary.total_movements }}</strong>
+        </article>
+
+        <article class="reports-stat">
+            <span>Unidades ingresadas</span>
+            <strong>{{ summary.total_entries }}</strong>
+        </article>
+
+        <article class="reports-stat reports-stat--warning">
+            <span>Unidades retiradas</span>
+            <strong>{{ summary.total_exits }}</strong>
+        </article>
+
+        <article class="reports-stat reports-stat--value">
+            <span>Balance neto</span>
+            <strong>{{ summary.net_balance }}</strong>
+        </article>
+
+    </section>
+
+    <!-- TABLA -->
+
+    <section class="reports-panel">
+
+        <div class="reports-panel-header">
+            <div>
+                <h2>Detalle de movimientos</h2>
+                <p>Historial según los filtros seleccionados.</p>
+            </div>
+
+            <div class="reports-table-actions">
+                <span class="reports-count">
+                    {{ summary.total_movements }} movimientos
+                </span>
+
+                <a
+                    href="{% url 'reports:movements_export' 'csv' %}{% if filter_query %}?{{ filter_query }}{% endif %}"
+                    class="reports-btn reports-btn--secondary"
+                >
+                    Exportar CSV
+                </a>
+
+                <a
+                    href="{% url 'reports:movements_export' 'xlsx' %}{% if filter_query %}?{{ filter_query }}{% endif %}"
+                    class="reports-btn reports-btn--primary"
+                >
+                    Exportar Excel
+                </a>
+            </div>
+        </div>
+
+        <div class="reports-table-wrap">
+            <table class="reports-table">
+                <thead>
+                    <tr>
+                        <th scope="col">Fecha</th>
+                        <th scope="col">Producto</th>
+                        <th scope="col">SKU</th>
+                        <th scope="col">Tipo</th>
+                        <th scope="col">Cantidad</th>
+                        <th scope="col">Usuario</th>
+                        <th scope="col">Proveedor</th>
+                        <th scope="col">Observaciones</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for movement in movements %}
+
+                        <tr>
+                            <td>
+                                {{ movement.created_at|date:"d/m/Y H:i" }}
+                            </td>
+
+                            <td>
+                                <span class="reports-product-name">
+                                    {{ movement.product.name }}
+                                </span>
+                            </td>
+
+                            <td>{{ movement.product.sku }}</td>
+
+                            <td>{{ movement.get_movement_type_display }}</td>
+
+                            <td>{{ movement.quantity }}</td>
+
+                            <td>{{ movement.user.username }}</td>
+
+                            <td>
+                                {{ movement.supplier.name|default:"Sin proveedor" }}
+                            </td>
+
+                            <td>
+                                {{ movement.notes|default:"—" }}
+                            </td>
+                        </tr>
+
+                    {% empty %}
+
+                        <tr>
+                            <td colspan="8" class="reports-empty">
+                                No se encontraron movimientos con
+                                los filtros seleccionados.
+                            </td>
+                        </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        <!-- PAGINACIÓN -->
+
+        {% if page_obj.has_other_pages %}
+
+            <div class="reports-pagination">
+
+                <span>
+                    Página {{ page_obj.number }}
+                    de {{ page_obj.paginator.num_pages }}
+                </span>
+
+                <div class="reports-pagination-actions">
+
+                    {% if page_obj.has_previous %}
+                        <a
+                            href="?{% if filter_query %}{{ filter_query }}&amp;{% endif %}page={{ page_obj.previous_page_number }}"
+                        >
+                            Anterior
+                        </a>
+                    {% endif %}
+
+                    {% if page_obj.has_next %}
+                        <a
+                            href="?{% if filter_query %}{{ filter_query }}&amp;{% endif %}page={{ page_obj.next_page_number }}"
+                        >
+                            Siguiente
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        {% endif %}
+    </section>
+</div>
+{% endblock %}

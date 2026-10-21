@@ -1,0 +1,80 @@
+{% extends "base/layout.html" %}
+
+{% block title %}Registrar movimiento{% endblock %}
+
+{% block content %}
+<section class="inventory-page">
+
+    <div class="inventory-page-header">
+        <div>
+            <h1>Registrar movimiento</h1>
+            <p>Registra una operación para actualizar el stock de un producto.</p>
+        </div>
+    </div>
+
+    <div class="movement-create-grid">
+
+        <!-- FORMULARIO -->
+
+        <div class="inventory-panel">
+            <div class="inventory-panel-heading">
+                <h2>Información del movimiento</h2>
+                <p>El stock se actualizará automáticamente al registrar la operación.</p>
+            </div>
+
+            <form method="post" class="movement-form">
+                {% csrf_token %}
+
+                {{ form.as_p }}
+
+                <div class="movement-form-actions">
+                    <button type="submit">
+                        Registrar movimiento
+                    </button>
+
+                    <a class="inventory-secondary-button" href="{% url 'inventory:movement_list' %}">
+                        Cancelar
+                    </a>
+                </div>
+            </form>
+        </div>
+
+        <!-- GUÍA -->
+
+        <aside class="movement-help-panel">
+            <h2>Tipos de movimiento</h2>
+
+            <div class="movement-help-item">
+                <span class="movement-badge movement-badge--entry">Entrada</span>
+                <p>Aumenta el stock cuando se reciben nuevas unidades.</p>
+            </div>
+
+            <div class="movement-help-item">
+                <span class="movement-badge movement-badge--exit">Salida</span>
+                <p>Disminuye el stock cuando se retiran unidades.</p>
+            </div>
+
+            <div class="movement-help-item">
+                <span class="movement-badge movement-badge--adjustment">
+                    Ajuste de entrada
+                </span>
+                <p>Corrige el inventario cuando existen más unidades de las registradas.</p>
+            </div>
+
+            <div class="movement-help-item">
+                <span class="movement-badge movement-badge--adjustment">
+                    Ajuste de salida
+                </span>
+                <p>Corrige el inventario cuando existen menos unidades de las registradas.</p>
+            </div>
+
+            <div class="movement-help-note">
+                <strong>Importante:</strong>
+                Los ajustes requieren indicar el motivo en el campo de observaciones.
+            </div>
+        </aside>
+
+    </div>
+
+</section>
+{% endblock %}

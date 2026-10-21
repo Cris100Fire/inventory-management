@@ -1,0 +1,44 @@
+{% extends "base/layout.html" %}
+{% load static %}
+
+{% block title %}Editar producto{% endblock %}
+
+{% block extra_head %}
+    <link rel="stylesheet" href="{% static 'css/products.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="products-page">
+
+    <div class="page-header">
+        <div>
+            <h1>Editar producto</h1>
+            <p>Actualiza la información de {{ object.name }}.</p>
+        </div>
+    </div>
+
+    <div class="product-form-panel">
+        <div class="panel-heading">
+            <h2>Información del producto</h2>
+            <p>Los cambios en el stock deben realizarse mediante movimientos.</p>
+        </div>
+
+        <form method="post" class="product-form">
+            {% csrf_token %}
+
+            {{ form.as_p }}
+
+            <div class="form-actions">
+                <button type="submit">
+                    Guardar cambios
+                </button>
+
+                <a class="secondary-button" href="{% url 'catalog:product_detail' object.pk %}">
+                    Cancelar
+                </a>
+            </div>
+        </form>
+    </div>
+
+</section>
+{% endblock %}

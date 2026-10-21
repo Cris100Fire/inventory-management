@@ -1,0 +1,125 @@
+{% extends "base/layout.html" %}
+{% load static %}
+
+{% block title %}Productos | Inventory Management{% endblock %}
+
+{% block extra_head %}
+    <link rel="stylesheet" href="{% static 'css/products.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="products-page">
+
+    <div class="page-header">
+        <div>
+            <h1>Productos</h1>
+            <p>Administra los productos registrados en el inventario.</p>
+        </div>
+
+        {% if perms.catalog.add_product %}
+            <a class="action-button" href="{% url 'catalog:product_create' %}">
+                + Registrar producto
+            </a>
+        {% endif %}
+    </div>
+
+    <div class="products-panel">
+        <div class="panel-heading">
+            <h2>Listado de productos</h2>
+        </div>
+
+        {% if products %}
+            <div class="table-responsive">
+                <table class="products-table">
+                    <thead>
+                        <tr>
+                            <th>SKU</th>
+                            <th>Nombre</th>
+                            <th>Categoría</th>
+                            <th>Proveedor</th>
+                            <th>Precio</th>
+                            <th>Stock</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for product in products %}
+                            <tr>
+                                <td>
+                                    <span class="product-sku">
+                                        {{ product.sku }}
+                                    </span>
+                                </td>
+
+                                <td>
+                                    <span class="product-name">
+                                        {{ product.name }}
+                                    </span>
+                                </td>
+
+                                <td>{{ product.category.name }}</td>
+
+                                <td>
+                                    {{ product.supplier|default:"Sin proveedor" }}
+                                </td>
+
+                                <td>S/ {{ product.price|floatformat:2 }}</td>
+
+                                <td>
+                                    {% if product.stock == 0 %}
+                                        <span class="status-badge status-badge--danger">
+                                            {{ product.stock }} unidades
+                                        </span>
+                                    {% elif product.stock <= product.minimum_stock %}
+                                        <span class="status-badge status-badge--warning">
+                                            {{ product.stock }} unidades
+                                        </span>
+                                    {% else %}
+                                        <span class="stock-normal">
+                                            {{ product.stock }} unidades
+                                        </span>
+                                    {% endif %}
+                                </td>
+
+                                <td>
+                                    {% if product.is_active %}
+                                        <span class="status-badge status-badge--success">
+                                            Activo
+                                        </span>
+                                    {% else %}
+                                        <span class="status-badge status-badge--neutral">
+                                            Inactivo
+                                        </span>
+                                    {% endif %}
+                                </td>
+
+                                <td>
+                                    <div class="table-actions">
+                                        <a href="{% url 'catalog:product_detail' product.pk %}">
+                                            Ver detalle
+                                        </a>
+
+                                        {% if perms.catalog.change_product %}
+                                            <a href="{% url 'catalog:product_update' product.pk %}">
+                                                Editar
+                                            </a>
+                                        {% endif %}
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="empty-state">
+                <h3>No hay productos registrados</h3>
+                <p>Los productos que registres aparecerán aquí.</p>
+            </div>
+        {% endif %}
+    </div>
+
+</section>
+{% endblock %}

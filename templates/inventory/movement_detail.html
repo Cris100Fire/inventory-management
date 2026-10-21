@@ -1,0 +1,103 @@
+{% extends "base/layout.html" %}
+
+{% block title %}Detalle del movimiento{% endblock %}
+
+{% block content %}
+<section class="inventory-page">
+
+    <div class="inventory-page-header">
+        <div>
+            <h1>Detalle del movimiento</h1>
+            <p>Información de la operación registrada en el inventario.</p>
+        </div>
+    </div>
+
+    <div class="movement-detail-grid">
+
+        <article class="inventory-panel">
+            <div class="inventory-panel-heading">
+                <h2>Información de la operación</h2>
+            </div>
+
+            <dl class="movement-details">
+
+                <div>
+                    <dt>Producto</dt>
+                    <dd>
+                        {% if perms.catalog.view_product %}
+                            <a href="{% url 'catalog:product_detail' movement.product.pk %}">
+                                {{ movement.product.name }}
+                            </a>
+                        {% else %}
+                            {{ movement.product.name }}
+                        {% endif %}
+                    </dd>
+                </div>
+
+                <div>
+                    <dt>Tipo de movimiento</dt>
+                    <dd>
+                        {% if movement.movement_type == "ENTRY" %}
+                            <span class="movement-badge movement-badge--entry">
+                                Entrada
+                            </span>
+                        {% elif movement.movement_type == "EXIT" %}
+                            <span class="movement-badge movement-badge--exit">
+                                Salida
+                            </span>
+                        {% else %}
+                            <span class="movement-badge movement-badge--adjustment">
+                                {{ movement.get_movement_type_display }}
+                            </span>
+                        {% endif %}
+                    </dd>
+                </div>
+
+                <div>
+                    <dt>Usuario responsable</dt>
+                    <dd>{{ movement.user.username }}</dd>
+                </div>
+
+                <div>
+                    <dt>Proveedor</dt>
+                    <dd>{{ movement.supplier|default:"No especificado" }}</dd>
+                </div>
+
+                <div>
+                    <dt>Fecha y hora</dt>
+                    <dd>{{ movement.created_at|date:"d/m/Y H:i" }}</dd>
+                </div>
+
+                <div class="movement-notes">
+                    <dt>Observaciones</dt>
+                    <dd>{{ movement.notes|default:"Sin observaciones"|linebreaksbr }}</dd>
+                </div>
+            </dl>
+        </article>
+
+        <aside class="movement-summary-panel">
+            <h2>Cantidad del movimiento</h2>
+
+            {% if movement.movement_type == "ENTRY" or movement.movement_type == "ADJUSTMENT_IN" %}
+                <p class="movement-summary-value movement-summary-value--positive">
+                    +{{ movement.quantity }}
+                </p>
+                <p>Unidades añadidas al inventario.</p>
+            {% else %}
+                <p class="movement-summary-value movement-summary-value--negative">
+                    −{{ movement.quantity }}
+                </p>
+                <p>Unidades retiradas del inventario.</p>
+            {% endif %}
+        </aside>
+
+    </div>
+
+    <div class="inventory-footer-actions">
+        <a href="{% url 'inventory:movement_list' %}">
+            ← Volver al historial
+        </a>
+    </div>
+
+</section>
+{% endblock %}
